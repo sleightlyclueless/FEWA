@@ -1,0 +1,27 @@
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: chefkochDB
+      POSTGRES_USER: sebastian
+      POSTGRES_PASSWORD: fweSS22
+    ports:
+      - 5432:5432
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/data
+    ports:
+      - 3000:3000
+
+volumes:
+  db-data:
+    driver: local

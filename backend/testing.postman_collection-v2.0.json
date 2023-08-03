@@ -1,0 +1,2806 @@
+{
+	"info": {
+		"_postman_id": "965205c4-3b4f-46c4-907b-f316b3c90d23",
+		"name": "Integration testing",
+		"description": "# ⛓️ Get started here\n\nPostman allows you to test your APIs using simple Javascript code. You can evaluate your response body, headers, cookies, and more using the [ChaiJS BDD](https://www.chaijs.com/api/bdd/) syntax.\n\nThis template guides you through the process of setting up an integration test to ensure that all individual components of an API function together seamlessly.\n\nThe API under test in this collection includes three endpoints for registering and receiving a token, accessing your unique generated name, and unregistering a token:\n\n- POST `/register`\n- POST `/unregister`\n- GET `/my-name`\n    \n\nBy setting up requests in the order of the operation, we can test the flow of data to and from the endpoints and ensure they work together as expected. We also verify that the data persists between requests on the back end.\n\n## 🔖 **How to use this template**\n\n**Step 1:** Check out the requests' documentation to learn more about -\n\n- what each request is meant to do.\n- the tests we've added against each one.\n    \n\n**Step 2:** Run this collection by clicking on \"Run\".\n\n<img src=\"https://content.pstmn.io/84019b0f-69c8-4c5f-98b9-2c90a6f9a0b1/Y29sbGVjdGlvbi1ydW5uZXItYnV0dG9uLmpwZWc=\" alt=\"\" height=\"103\" width=\"266\">\n\n**Step 3:** To customize this template, replace the request URLs with your API endpoints and add or edit the tests if needed.\n\n## ℹ️ Resources\n\n[Scripting in Postman](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)\n\n[Test script examples](https://learning.postman.com/docs/writing-scripts/script-references/test-examples/)\n\n[Postman Sandbox API reference](https://learning.postman.com/docs/sending-requests/grpc/postman-sandbox-api/#writing-assertions)\n\n[Using the Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "27276224"
+	},
+	"item": [
+		{
+			"name": "0-Auth",
+			"item": [
+				{
+					"name": "0-Register User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\" : \"sebi@fwe.de\",\r\n    \"password\" : \"12345\",\r\n    \"fName\" : \"Sebastian\",\r\n    \"lName\" : \"Zill\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/auth/register"
+					},
+					"response": []
+				},
+				{
+					"name": "1-Login User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/auth/login"
+					},
+					"response": []
+				},
+				{
+					"name": "2-Unauthorized-no-jwt-token",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:3000/ingredientEntries"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1-Recipe",
+			"item": [
+				{
+					"name": "1-Err-GetRecipeNoneExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "2-Err-GetRecipeByIdNoneExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries/5"
+					},
+					"response": []
+				},
+				{
+					"name": "3-Err-GetRecipeByNameNoneExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries/Nudelauflauf"
+					},
+					"response": []
+				},
+				{
+					"name": "4-CreateRecipe",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rName\" : \"Nudelauflauf\",\r\n    \"rDescription\" : \"Nudeln im Auflauf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "5-Err-CreateDuplicateRecipe",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rName\" : \"Nudelauflauf\",\r\n    \"rDescription\" : \"Nudeln im Auflauf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "6-Err-CreateMissingInput",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rDescription\" : \"Nudeln im Auflauf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "7-Err-CreateUnknownInput Copy",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rName\" : \"Carbonara\",\r\n    \"rDescription\" : \"Nudeln im Auflauf\",\r\n    \"lorem\" : \"ipsum\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "8-CreateAnotherRecipe",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rName\" : \"Pizza\",\r\n    \"rDescription\" : \"Nudeln im Auflauf\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "9-CreateAnotherRecipe",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rName\" : \"Schnitzel\",\r\n    \"rDescription\" : \"mit Jägersoße\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "10-UpdateRecipe",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rDescription\":\"Pizza out of the freezer\",\r\n    \"rImg\":\"Pizza.png\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries/2"
+					},
+					"response": []
+				},
+				{
+					"name": "11-Err-UpdateRecipeNotExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rDescription\":\"Pizza out of the freezer\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries/10"
+					},
+					"response": []
+				},
+				{
+					"name": "12-Err-UpdateUnknownInput",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rDescription\":\"Pizza out of the freezer\",\r\n    \"foo\" : \"bar\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries/2"
+					},
+					"response": []
+				},
+				{
+					"name": "13-DeleteRecipe",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "localhost:3000/recipeEntries/2"
+					},
+					"response": []
+				},
+				{
+					"name": "14-Err-DeleteRecipeNotExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "localhost:3000/recipeEntries/2"
+					},
+					"response": []
+				},
+				{
+					"name": "15-getAllRecipe",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "16-getRecipeById",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries/1"
+					},
+					"response": []
+				},
+				{
+					"name": "17-getRecipeByName",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries/Nudelauflauf"
+					},
+					"response": []
+				},
+				{
+					"name": "18-Err-NoBodyInGet",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"no\": \"body\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntries/Nudelauflauf"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2-Ingredient",
+			"item": [
+				{
+					"name": "1-Err-GetingredientEntriesNoneExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "2-Err-GetRecipeByIdNoneExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries/1"
+					},
+					"response": []
+				},
+				{
+					"name": "3-Err-GetRecipeByNameNoneExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries/Nudeln"
+					},
+					"response": []
+				},
+				{
+					"name": "4-CreateIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iName\" : \"Nudeln\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "5-Err-CreateDuplicateIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iName\" : \"Nudeln\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "6-Err-CreateIngredientUnknownInput",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rName\" : \"Tomaten\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "7-CreateAnotherIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iName\" : \"Tomaten\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "8-CreateAnotherIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iName\" : \"Schnitzel\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "9-CreateAnotherIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iName\" : \"Test\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "getingredientEntries",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "10-Err-UpdateIngredientNotExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iName\":\"Foo\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries/10"
+					},
+					"response": []
+				},
+				{
+					"name": "11-Err-UpdateIngredientAlreadyExists",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iName\":\"Schnitzel\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries/4"
+					},
+					"response": []
+				},
+				{
+					"name": "12-Err-UpdateIngredientUnknownInput",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rDescription\":\"Pizza out of the freezer\",\r\n    \"foo\" : \"bar\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries/2"
+					},
+					"response": []
+				},
+				{
+					"name": "12-2-UpdateIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iName\":\"Steak\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries/3"
+					},
+					"response": []
+				},
+				{
+					"name": "13-DeleteIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "localhost:3000/ingredientEntries/4"
+					},
+					"response": []
+				},
+				{
+					"name": "14-Err-DeleteIngredientNotExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "localhost:3000/ingredientEntries/4"
+					},
+					"response": []
+				},
+				{
+					"name": "15-getAllIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "16-getIngredientById",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries/1"
+					},
+					"response": []
+				},
+				{
+					"name": "17-getIngredientByName",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries/Steak"
+					},
+					"response": []
+				},
+				{
+					"name": "18-Err-NoBodyInGet",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"foo\":\"bar\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/ingredientEntries/Nudeln"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3-CookingStep",
+			"item": [
+				{
+					"name": "1- Err-GetAllCookingStepNoneExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "2- Err-GetCookingStepForRecipeNoneExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rId\" : 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "3- Err-GetCookingStepForIngredientNoneExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"iId\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "5-CreateCookingStep",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Nudeln in Topf kochendes Wasser geben\",\r\n    \"unit\" : \"Gramm\",\r\n    \"amount\" : \"500\",\r\n    \"rId\" : 1,\r\n    \"iId\" : 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "6-CreateCookingStep",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Tomaten hinzugeben\",\r\n    \"unit\" : \"Stück\",\r\n    \"amount\" : \"2\",\r\n    \"rId\" : 1,\r\n    \"iId\" :2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "7-Err-CreateCookingStepRecipeNotExists",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Schnitzel plattschlagen und auf den Grill\",\r\n    \"unit\" : \"Stk\",\r\n    \"amount\" : \"1\",\r\n    \"rId\" : 2,\r\n    \"iId\" : 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "8-Err-CreateCookingStepIngredientNotExists",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Schnitzel plattschlagen und auf den Grill\",\r\n    \"unit\" : \"Stk\",\r\n    \"amount\" : \"1\",\r\n    \"rId\" : 3,\r\n    \"iId\" : 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "9-createCookingStep",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Schnitzel plattschlagen und auf den Grill\",\r\n    \"unit\" : \"Stk\",\r\n    \"amount\" : \"1\",\r\n    \"rId\" : 3,\r\n    \"iId\" : 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "10-createCookingStep",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Schnitzel immer weiter plattschlagen und auf den Grill\",\r\n    \"unit\" : \"Stk\",\r\n    \"amount\" : \"1\",\r\n    \"rId\" : 3,\r\n    \"iId\" : 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "11-Err-createCookingStepUnknownInput",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "12-Err-createCookingStepMissingInput",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Schnitzel plattschlagen und auf den Grill\",\r\n    \"unit\" : \"Stk\",\r\n    \"amount\" : \"1\",\r\n    \"rId\" : 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "getCookingSteps",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries"
+					},
+					"response": []
+				},
+				{
+					"name": "13-UpdateCookingStep",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\": \"Tomatensuppe dazu\",\r\n    \"unit\": \"Gramm\",\r\n    \"amount\": \"250\",\r\n    \"rId\": 1,\r\n    \"iId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries/4"
+					},
+					"response": []
+				},
+				{
+					"name": "14-Err-UpdateCookingStepIngredientNotExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Schnitzel noch mehr plattschlagen und auf den Grill\",\r\n    \"unit\" : \"Stk\",\r\n    \"amount\" : \"1\",\r\n    \"rId\" : 3,\r\n    \"iId\" : 5\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries/4"
+					},
+					"response": []
+				},
+				{
+					"name": "15-Err-UpdateCookingStepRecipeNotExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Schnitzel noch mehr plattschlagen und auf den Grill\",\r\n    \"unit\" : \"Stk\",\r\n    \"amount\" : \"1\",\r\n    \"rId\" : 5,\r\n    \"iId\" : 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries/4"
+					},
+					"response": []
+				},
+				{
+					"name": "16-Err-UpdateCookingStepNotExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"description\" : \"Schnitzel als noch mehr plattschlagen und auf den Grill\",\r\n    \"unit\" : \"Stk\",\r\n    \"amount\" : \"1\",\r\n    \"rId\" : 3,\r\n    \"iId\" : 3\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/cookingStepEntries/6"
+					},
+					"response": []
+				},
+				{
+					"name": "17-DeleteCookingStep",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "localhost:3000/cookingStepEntries/4"
+					},
+					"response": []
+				},
+				{
+					"name": "17-Err-DeleteCookingStepNotExists",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "localhost:3000/cookingStepEntries/4"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4-CustomRoutes",
+			"item": [
+				{
+					"name": "GetRecipesWithIngredientNotExist",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntriesForIngredient/Schnitzel"
+					},
+					"response": []
+				},
+				{
+					"name": "GetRecipesWithIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntriesForIngredient/Nudeln"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5-ForeignkeyHandling",
+			"item": [
+				{
+					"name": "1-GetRecipesWithIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:3000/recipeEntriesForIngredient/Steak"
+					},
+					"response": []
+				},
+				{
+					"name": "2-Err-DeleteUsedIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "localhost:3000/ingredientEntries/3"
+					},
+					"response": []
+				},
+				{
+					"name": "3-DeleteCookingStep",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "localhost:3000/cookingStepEntries/3"
+					},
+					"response": []
+				},
+				{
+					"name": "4-DeleteIngredient",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "localhost:3000/ingredientEntries/3"
+					},
+					"response": []
+				},
+				{
+					"name": "5-DeleteRecipe",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest({\r",
+									"    url: 'localhost:3000/auth/login',\r",
+									"    method: 'POST',\r",
+									"    header: {'Content-Type':'application/json'},\r",
+									"    body: '{\"email\": \"sebi@fwe.de\",\"password\": \"12345\"}'\r",
+									"}, function (err, res) {\r",
+									"    console.log(res);\r",
+									"    pm.collectionVariables.set(\"token\", res.json().accessToken);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": "localhost:3000/recipeEntries/3"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "baseUrl",
+			"value": "https://postman-integration-testing.glitch.me/"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"disabled": true
+		}
+	]
+}

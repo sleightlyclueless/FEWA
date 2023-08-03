@@ -1,0 +1,748 @@
+openapi: 3.1.0
+x-stoplight:
+  id: st1z4w149w8se
+info:
+  title: FWE-SS-23-769544
+  version: '1.0'
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /recipeEntries:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                x-examples:
+                  Example 1:
+                    - rId: 1
+                      rName: Nudelauflauf
+                      rDescription: Nudeln im Auflauf
+                      rImg: null
+                      rCreatedAt: '2023-05-16T21:36:12.369Z'
+                      rUpdatedAt: '2023-05-16T21:36:12.369Z'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        '400':
+          description: Bad Request
+          headers: {}
+        '404':
+          description: Not Found
+      operationId: getRecipeEntries
+      security:
+        - Bearer: []
+    post:
+      summary: ''
+      operationId: createRecipe
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+                x-examples:
+                  Example 1:
+                    rName: Nudelauflauf
+                    rDescription: Nudeln im Auflauf
+                    rImg: Nudeln im Auflauf
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          description: Bad Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  rName: Nudelauflauf
+                  rDescription: Nudeln im Auflauf
+                  rImg: ''
+              properties:
+                rName:
+                  type: string
+                rDescription:
+                  type: string
+                rImg:
+                  type: string
+              required:
+                - rName
+  '/recipeEntries/{rId}':
+    parameters:
+      - schema:
+          type: string
+        name: rId
+        in: path
+        required: true
+    delete:
+      summary: ''
+      operationId: deleteRecipeEntryById
+      responses:
+        '204':
+          description: No Content
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      summary: ''
+      operationId: updateRecipeEntryById
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+                x-examples:
+                  Example 1:
+                    rName: Nudelauflauf
+                    rDescription: Nudeln im Auflauf
+                    rImg: Nudeln im Auflauf
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rName:
+                  type: string
+                rDescription:
+                  type: string
+                rImg:
+                  type: string
+              x-examples:
+                Example 1:
+                  rName: Nudelauflauf
+                  rDescription: Nudeln im Auflauf
+                  rImg: ''
+          application/xml:
+            schema:
+              type: object
+              properties:
+                rName:
+                  type: string
+                rDescription:
+                  type: string
+                rImg:
+                  type: string
+              x-examples:
+                Example 1:
+                  rName: Nudelauflauf
+                  rDescription: Nudeln im Auflauf
+                  rImg: Nudeln im Auflauf
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                rName:
+                  type: string
+                rDescription:
+                  type: string
+                rImg:
+                  type: string
+              x-examples:
+                Example 1:
+                  rName: Nudelauflauf
+                  rDescription: Nudeln im Auflauf
+                  rImg: Nudeln im Auflauf
+        description: ''
+      security:
+        - Bearer: []
+    get:
+      summary: ''
+      operationId: getRecipeEntryById
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+                x-examples:
+                  Example 1:
+                    rName: Nudelauflauf
+                    rDescription: Nudeln im Auflauf
+                    rImg: Nudeln im Auflauf
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+  '/recipeEntries/{rName}':
+    parameters:
+      - schema:
+          type: string
+        name: rName
+        in: path
+        required: true
+    get:
+      summary: ''
+      operationId: getRecipeEntryByName
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+                x-examples:
+                  Example 1:
+                    rName: Nudelauflauf
+                    rDescription: Nudeln im Auflauf
+                    rImg: Nudeln im Auflauf
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+  /ingredientEntries:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                x-examples:
+                  Example 1:
+                    - iId: 1
+                      iName: Nudeln
+                    - iId: 2
+                      iName: Tomaten
+                items:
+                  $ref: '#/components/schemas/Ingredient'
+        '400':
+          description: Bad Request
+          headers: {}
+        '404':
+          description: Not Found
+      operationId: getIngredientEntries
+      security:
+        - Bearer: []
+    post:
+      summary: ''
+      operationId: createIngredient
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+                x-examples:
+                  Example 1:
+                    iName: Nudeln
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          description: Bad Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  iName: ''
+              properties:
+                iName:
+                  type: string
+              required:
+                - iName
+    parameters: []
+  '/ingredientEntries/{iId}':
+    parameters:
+      - schema:
+          type: string
+        name: iId
+        in: path
+        required: true
+    delete:
+      summary: ''
+      operationId: deleteIngredientEntryById
+      responses:
+        '204':
+          description: No Content
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      summary: ''
+      operationId: updatetIngredientEntryById
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+                x-examples:
+                  Example 1:
+                    iName: Nudeln
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                iName:
+                  type: string
+              x-examples:
+                Example 1:
+                  iName: ''
+          application/xml:
+            schema:
+              type: object
+              properties:
+                rName:
+                  type: string
+                rDescription:
+                  type: string
+                rImg:
+                  type: string
+              x-examples:
+                Example 1:
+                  rName: Nudelauflauf
+                  rDescription: Nudeln im Auflauf
+                  rImg: Nudeln im Auflauf
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                rName:
+                  type: string
+                rDescription:
+                  type: string
+                rImg:
+                  type: string
+              x-examples:
+                Example 1:
+                  rName: Nudelauflauf
+                  rDescription: Nudeln im Auflauf
+                  rImg: Nudeln im Auflauf
+        description: ''
+      security:
+        - Bearer: []
+    get:
+      summary: ''
+      operationId: getIngredientEntryById
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+                x-examples:
+                  Example 1:
+                    iName: Nudeln
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+  '/ingredientEntries/{iName}':
+    parameters:
+      - schema:
+          type: string
+        name: iName
+        in: path
+        required: true
+    get:
+      summary: ''
+      operationId: getIngredientEntryByName
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Ingredient'
+                x-examples:
+                  Example 1:
+                    iName: Nudeln
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+  /cookingStepEntries:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                x-examples:
+                  Example 1:
+                    - cId: 1
+                      description: Nudeln in Topf kochendes Wasser geben
+                      unit: Gramm
+                      amount: "500"
+                      rId: 1
+                      iId: 1
+                    - cId: 2
+                      description: Tomatensuppe dazugeben
+                      unit: Gramm
+                      amount: "250"
+                      rId: 1
+                      iId: 2
+                items:
+                  $ref: '#/components/schemas/CookingStep'
+        '400':
+          description: Bad Request
+          headers: {}
+        '404':
+          description: Not Found
+      operationId: getCookingSteps
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              x-examples:
+                Example 1:
+                  cId: 1
+                  description: Nudeln in Topf kochendes Wasser geben
+                  unit: Gramm
+                  amount: "500"
+                  rId: 1
+                  iId: 1
+              properties:
+                cId:
+                  type: integer
+                description:
+                  type: string
+                unit:
+                  type: string
+                amount:
+                  type: string
+                rId:
+                  type: integer
+                iId:
+                  type: integer
+              required:
+                - cId
+                - description
+                - unit
+                - amount
+                - rId
+                - iId
+            examples:
+              Example 1:
+                value:
+                  - id: 0
+                    title: string
+                    content: string
+                    createdAt: '2019-08-24T14:15:22Z'
+        description: ''
+      security:
+        - Bearer: []
+    post:
+      summary: ''
+      operationId: createCookingSteps
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CookingStep'
+                x-examples:
+                  Example 1:
+                    description: Nudeln in Topf kochendes Wasser geben
+                    unit: Gramm
+                    amount: "500"
+                    rId: 1
+                    iId: 1
+            application/xml:
+              schema:
+                type: object
+                properties: {}
+        '400':
+          description: Bad Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CookingStep'
+              x-examples:
+                Example 1:
+                  description: Nudeln in Topf kochendes Wasser geben
+                  unit: Gramm
+                  amount: "500"
+                  rId: 1
+                  iId: 1
+    parameters: []
+  '/cookingStepEntries/{cId}':
+    parameters:
+      - schema:
+          type: string
+        name: cId
+        in: path
+        required: true
+    delete:
+      summary: ''
+      operationId: deleteookingStepsById
+      responses:
+        '204':
+          description: No Content
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+    put:
+      summary: ''
+      operationId: updateCookingStepsById
+      responses:
+        '202':
+          description: Accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CookingStep'
+                x-examples:
+                  Example 1:
+                    description: Nudeln in Topf kochendes Wasser geben
+                    unit: Gramm
+                    amount: "500"
+                    rId: 1
+                    iId: 1
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cId:
+                  type: integer
+                description:
+                  type: string
+                unit:
+                  type: string
+                amount:
+                  type: string
+                rId:
+                  type: integer
+                iId:
+                  type: integer
+              x-examples:
+                Example 1:
+                  cId: 1
+                  description: Nudeln in Topf kochendes Wasser geben
+                  unit: Gramm
+                  amount: "500"
+                  rId: 1
+                  iId: 1
+          application/xml:
+            schema:
+              type: object
+              properties:
+                rName:
+                  type: string
+                rDescription:
+                  type: string
+                rImg:
+                  type: string
+              x-examples:
+                Example 1:
+                  rName: Nudelauflauf
+                  rDescription: Nudeln im Auflauf
+                  rImg: Nudeln im Auflauf
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                rName:
+                  type: string
+                rDescription:
+                  type: string
+                rImg:
+                  type: string
+              x-examples:
+                Example 1:
+                  rName: Nudelauflauf
+                  rDescription: Nudeln im Auflauf
+                  rImg: Nudeln im Auflauf
+        description: ''
+      security:
+        - Bearer: []
+    get:
+      summary: ''
+      operationId: getCookingStepsById
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CookingStep'
+                x-examples:
+                  Example 1:
+                    description: Nudeln in Topf kochendes Wasser geben
+                    unit: Gramm
+                    amount: "500"
+                    rId: 1
+                    iId: 1
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+  /auth/register:
+    post:
+      summary: ''
+      operationId: registerUser
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+                x-examples:
+                  Example 1:
+                    email: sebi@fwe.de
+                    password: '12345'
+                    fName: Sebastian
+                    lName: Zill
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+              x-examples:
+                Example 1:
+                  email: sebi@fwe.de
+                  password: '12345'
+                  fName: Sebastian
+                  lName: Zill
+  /auth/login:
+    post:
+      summary: ''
+      operationId: loginUser
+      responses:
+        '200':
+          description: OK
+          headers:
+            header-0:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+components:
+  schemas:
+    Recipe:
+      type: object
+      x-examples:
+        Example 1:
+          rId: 1
+          rName: Nudelauflauf
+          rDescription: Pizza out of the freezer
+          rImg: Pizza.png
+          rCreatedAt: '2023-05-16T21:36:12.369Z'
+          rUpdatedAt: '2023-05-17T11:47:58.129Z'
+      properties:
+        rId:
+          type: integer
+        rName:
+          type: string
+        rDescription:
+          type: string
+        rImg:
+          type: string
+        rCreatedAt:
+          type: string
+        rUpdatedAt:
+          type: string
+    Ingredient:
+      type: object
+      properties:
+        iId:
+          type: integer
+        iName:
+          type: string
+      x-examples:
+        Example 1:
+          iId: 2
+          iName: Tomaten
+    CookingStep:
+      type: object
+      properties:
+        cId:
+          type: integer
+        description:
+          type: string
+        unit:
+          type: string
+        amount:
+          type: string
+        rId:
+          type: integer
+        iId:
+          type: integer
+      x-examples:
+        Example 1:
+          cId: 1
+          description: Nudeln in Topf kochendes Wasser geben
+          unit: Gramm
+          amount: "500"
+          rId: 1
+          iId: 1
+    User:
+      type: object
+      x-examples:
+        Example 1:
+          email: sebi@fwe.de
+          password: '12345'
+          fName: Sebastian
+          lName: Zill
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        fName:
+          type: string
+        lName:
+          type: string
+        createdAt:
+          type: string
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
